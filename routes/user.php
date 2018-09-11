@@ -12,4 +12,8 @@
 */
 
 Route::post('/register', "UserController@register");
+Route::post('/login', "UserController@login");
 
+Route::get('/ttt', function () {
+    return view('welcome');
+})->middleware('token');

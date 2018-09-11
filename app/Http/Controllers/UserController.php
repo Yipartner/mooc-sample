@@ -60,5 +60,44 @@ class UserController extends Controller
         }
 
     }
+    public function login(Request $request)
+    {
+        $rules = [
+            'login_num' => 'required',
+            'password' => 'required|min:6|max:20'
+        ];
+
+        $validator = ValidationHelper::validateCheck($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json([
+                'code' => 1001,
+                'message' => $validator->errors()
+            ]);
+        }
+        $loginInfo = ValidationHelper::getInputData($request, $rules);
+
+        $userId = $this->userService->login($loginInfo['login_num'], $loginInfo['password']);
+        if ($userId == -1)
+            return response()->json([
+                'code' => 1004,
+                'message' => '用户不存在'
+            ]);
+        else if ($userId == -2git )
+            return response()->json([
+                'code' => 1005,
+                'message' => '密码错误'
+            ]);
+        else {
+            $tokenStr = $this->tokenService->makeToken($userId);
+            return response()->json([
+                'code' => 1000,
+                'message' => '登陆成功',
+                'data' => [
+                    'user_id' => $userId,
+                    'token' => $tokenStr
+                ]
+            ]);
+        }
+    }
 
 }

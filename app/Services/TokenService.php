@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class TokenService
 {
-    public static  $EXPIRE_TIME = 2; // 小时
+    public static  $EXPIRE_TIME = 48; // 小时
 
     public function createToken($userId)
     {
@@ -91,7 +91,20 @@ class TokenService
     public function getUserByToken($tokenStr)
     {
         $tokenInfo = $this->getToken($tokenStr);
-        $userInfo=DB::table('users')->where('user_id',$tokenInfo->user_id)->select('user_id','mobile','avatar','nick_name','email')->first();
+        $userInfo=DB::table('users')->where('id',$tokenInfo->user_id)->select('id','login_num','name','coin','is_stu','is_teacher')->first();
+        if ($userInfo->is_stu == 1 && $userInfo->is_teacher == 0){
+            $userInfo->role = "student";
+            unset($userInfo->is_stu);
+            unset($userInfo->is_teacher);
+        }else if ($userInfo->is_stu == 0 && $userInfo->is_teacher == 1){
+            $userInfo->role = "teacher";
+            unset($userInfo->is_stu);
+            unset($userInfo->is_teacher);
+        }else{
+            $userInfo->role = "error";
+            unset($userInfo->is_stu);
+            unset($userInfo->is_teacher);
+        }
         return $userInfo;
     }
 }

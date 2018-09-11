@@ -43,5 +43,17 @@ class UserService
         $userId = DB::table('users')->insertGetId($userInfo);
         return $userId;
     }
+    public function login($loginNum,$password)
+    {
+
+        $user = DB::table('users')->where('login_num',$loginNum)->first();
+        if ($user == null)
+            return -1;
+
+        if (! Hash::check($password, $user->password))
+            return -2;
+        else
+            return $user->id;
+    }
 
 }
