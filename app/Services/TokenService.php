@@ -107,4 +107,15 @@ class TokenService
         }
         return $userInfo;
     }
+    public function teacherVerify($tokenStr)
+    {
+        $tokenInfo = $this->getToken($tokenStr);
+        $userInfo=DB::table('users')->where('id',$tokenInfo->user_id)->select('id','login_num','name','coin','is_stu','is_teacher')->first();
+        if ($userInfo->is_teacher == 0){
+            return -1;
+        }else{
+            return 0;
+        }
+
+    }
 }
