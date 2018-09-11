@@ -11,8 +11,9 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::post('/register', "UserController@register");
+Route::post('/login', "UserController@login");
 
-require_once "user.php";
+Route::get('/ttt', function () {
+    return view('welcome');
+})->middleware('token');
