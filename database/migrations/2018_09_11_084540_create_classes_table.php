@@ -13,7 +13,7 @@ class CreateClassTable extends Migration
      */
     public function up()
     {
-        Schema::create('class', function (Blueprint $table) {
+        Schema::create('classes', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
             $table->text('content');
@@ -24,8 +24,11 @@ class CreateClassTable extends Migration
             $table->float('fee_back_num');
             //用于作业接口认证
             $table->string('access_token')->nullable();
-            $table->string('access_secret')->nullable();
+            $table->string('class_secret')->nullable();
+            $table->string('class_num');
             $table->timestamps();
+            $table->unique('access_token');
+            $table->unique('class_num');
         });
     }
 
@@ -36,6 +39,6 @@ class CreateClassTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('class');
+        Schema::dropIfExists('classes');
     }
 }

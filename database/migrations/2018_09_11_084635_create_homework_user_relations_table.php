@@ -18,6 +18,7 @@ class CreateHomeworkUserRelationsTable extends Migration
             $table->integer('user_id');
             $table->integer('lesson_id');
             $table->dateTime('created_at');
+            $table->unique(['user_id','lesson_id']);
         });
     }
 
