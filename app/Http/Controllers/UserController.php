@@ -82,7 +82,7 @@ class UserController extends Controller
                 'code' => 1004,
                 'message' => '用户不存在'
             ]);
-        else if ($userId == -2git )
+        else if ($userId == -2)
             return response()->json([
                 'code' => 1005,
                 'message' => '密码错误'

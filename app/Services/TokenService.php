@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class TokenService
 {
-    public static  $EXPIRE_TIME = 48; // 小时
+    public static  $EXPIRE_TIME = 2; // 小时
 
     public function createToken($userId)
     {
