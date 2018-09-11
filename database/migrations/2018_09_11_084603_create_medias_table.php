@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUsersTable extends Migration
+class CreateMediasTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,13 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('medias', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('login_num')->unique();
-            $table->string('password');
-            $table->integer('coin')->default(0);
-            $table->boolean('is_stu');
-            $table->boolean('is_teacher');
-            $table->timestamps();
+            $table->string('url');
+            // 0：不可用
+            $table->boolean('is_available')->default(0);
+            $table->dateTime('created_at');
         });
     }
 
@@ -32,6 +30,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('medias');
     }
 }

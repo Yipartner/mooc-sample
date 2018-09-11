@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUsersTable extends Migration
+class CreateClassTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,15 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('class', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('login_num')->unique();
-            $table->string('password');
-            $table->integer('coin')->default(0);
-            $table->boolean('is_stu');
-            $table->boolean('is_teacher');
+            $table->text('content');
+            $table->integer('teacher_id');
+            //课程押金费用
+            $table->integer('fee');
+            //最大押金退还额度
+            $table->float('fee_back_num');
             $table->timestamps();
         });
     }
@@ -32,6 +33,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('class');
     }
 }
