@@ -27,6 +27,7 @@ class CreateClassTable extends Migration
             $table->string('class_secret')->nullable();
             $table->string('class_num');
             $table->timestamps();
+            $table->dateTime('token_expired_at')->nullable();
             $table->unique('access_token');
             $table->unique('class_num');
         });
