@@ -3,6 +3,7 @@
 namespace App\Http;
 
 use App\Http\Middleware\EnableCrossRequestMiddleware;
+use App\Http\Middleware\TeacherMiddleware;
 use App\Http\Middleware\TokenMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -61,5 +62,6 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'token' => TokenMiddleware::class,
+        'teacher' => TeacherMiddleware::class,
     ];
 }

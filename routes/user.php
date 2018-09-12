@@ -16,4 +16,4 @@ Route::post('/login', "UserController@login");
 
 Route::get('/ttt', function () {
     return view('welcome');
-})->middleware('token');
+})->middleware('teacher');
