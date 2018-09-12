@@ -21,7 +21,9 @@ class ClassService
         $fullClassInfo = array_merge($classInfo, [
             'teacher_id' => $teacherId,
             'created_at' => $time,
-            'updated_at' => $time
+            'updated_at' => $time,
+            /** class14935210507BVc9v9ujP */
+            'class_num' => 'class' . time() . str_random(10)
         ]);
         $classId = DB::table($this->tbName)->insertGetId($fullClassInfo);
         return $classId;
@@ -29,6 +31,8 @@ class ClassService
 
     public function updateClass($classId, $classInfo)
     {
+        $time = new Carbon();
+        $classInfo['updated_at'] = $time;
         DB::table($this->tbName)->where('id', $classId)->update($classInfo);
     }
 
@@ -42,6 +46,12 @@ class ClassService
     {
         $classesInfo = DB::table($this->tbName)->where('teacher_id', $teacherId)->get();
         return $classesInfo;
+    }
+
+    public function getAllClasses()
+    {
+        $classInfos = DB::table($this->tbName)->get();
+        return $classInfos;
     }
 
     public function deleteClass($classId)
@@ -68,5 +78,13 @@ class ClassService
         return $res != null;
     }
 
-    //todo BuyClass
+    public function buyClass($userId, $classId)
+    {
+        $time = new Carbon();
+        $res = DB::table('user_class_relations')->insert([
+            'user_id' => $userId,
+            'class_id' => $classId,
+            'created_at' => $time
+        ]);
+    }
 }
