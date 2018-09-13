@@ -23,7 +23,8 @@ class HomeworkService
      * 获取单节课时作业完成情况
      * @param $lessonId
      */
-    public function getLessonFinishInfo($lessonId){
+    public function getLessonFinishInfo($lessonId)
+    {
 
     }
 
@@ -44,7 +45,11 @@ class HomeworkService
             ]);
     }
 
-    public function finishHomeworks($homework)
+    /**
+     * 批量添加作业完成记录
+     * @param $homework
+     */
+    public function finishManyHomework($homework)
     {
         DB::table($this->tableName)
             ->insert($homework);
