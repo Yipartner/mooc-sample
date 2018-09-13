@@ -57,15 +57,24 @@ class HomeworkService
 
     /**
      * 批量删除作业完成记录
-     * @param $homeworkId
+     * @param $homework
      */
-    public function removeFinishHomework(array $homeworkId)
+    public function removeFinishHomework(array $homework)
     {
         DB::table($this->tableName)
-            ->whereIn('id', $homeworkId)
+            ->whereIn('id', $homework)
             ->delete();
     }
 
+    /**
+     * 删除单个作业完成记录
+     * @param $homework
+     */
+    public function removeOneHomework($homework){
+        DB::table($this->tableName)
+            ->where('id',$homework)
+            ->delete();
+    }
 
     /*作业系统API接口*/
 
@@ -121,6 +130,32 @@ class HomeworkService
                 'token_expired_at' => Carbon::now()->addMinutes(5)
             ]);
         return $accessToken;
+    }
+
+    /**
+     * 根据class_num 获取 class_id
+     * @param $classNum
+     * @return mixed
+     */
+    public function getClassIdByClassNum($classNum){
+        return DB::table('classes')
+            ->where('class_num',$classNum)
+            ->value('id');
+    }
+
+    /**
+     * 判断教师是否可以编辑作业完成记录
+     * @param $teacherId
+     * @param $homeworkId
+     * @return bool
+     */
+    public function canTeacherEditHomework($teacherId,$homeworkId){
+        $trueTeacherId = DB::table($this->tableName)
+            ->where('id',$homeworkId)
+            ->join('lessons','lessons.id','=',$this->tableName.'.lesson_id')
+            ->join('classes','lessons.class_id','=','classes.id')
+            ->value('teacher_id');
+        return ($trueTeacherId == $teacherId);
     }
 
 }

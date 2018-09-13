@@ -19,4 +19,12 @@ class Code{
         'code' => 103,
         'message'=> 'params not right'
     ];
+    const NO_PERMISSION= [
+        'code' => 104,
+        'message'=> 'no permission'
+    ];
+    const CLASS_OWNER_VALIDATE=[
+        'code'=>105,
+        'message'=> 'class_num or class_secret not right'
+    ];
 }

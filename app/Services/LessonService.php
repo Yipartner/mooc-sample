@@ -57,4 +57,10 @@ class LessonService
             'movie_id' => $movieId
         ]);
     }
+    public function getLessonOwner($lessonId){
+        return DB::table($this->tbName)
+            ->where('id',$lessonId)
+            ->join('classes','classes.id','=','lessons.class_id')
+            ->value('classes.teacher_id');
+    }
 }
