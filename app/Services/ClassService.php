@@ -87,4 +87,10 @@ class ClassService
             'created_at' => $time
         ]);
     }
+
+    public function getClassByLessonId($lessonId){
+        return DB::table('lessons')
+            ->where('id',$lessonId)
+            ->value('class_id');
+    }
 }

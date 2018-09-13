@@ -157,8 +157,21 @@ class HomeworkController extends Controller
 
     /*对外开放API接口*/
 
-
+    /**
+     * 添加作业完成记录
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function addHomeworkApi(Request $request){
-
+        $userId = $request->input('lessonUser', null);
+        $lessonId = $request->input('lessonId', null);
+        if ($userId == null || $lessonId == null) {
+            return response()->json(Code::PARAM_ERROR);
+        }
+        if ($this->classService->getClassByLessonId($lessonId)!=$request->class->id){
+            return response()->json(Code::NO_PERMISSION);
+        }
+        $this->homeworkService->finishOneHomework($userId,$lessonId);
+        return response()->json(Code::SUCCESS);
     }
 }

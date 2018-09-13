@@ -13,10 +13,16 @@ class HomeworkService
 
     /**
      * 获取课程整体作业完成情况
+     * @param $classId
      */
     public function getClassFinishInfo($classId)
     {
-
+        $info = DB::table('lessons')
+            ->where('class_id',$classId)
+            ->join($this->tableName,'lessons.id','=',$this->tableName.'.lesson_id')
+            ->select($this->tableName.'.*')
+            ->get();
+        return $info;
     }
 
     /**
@@ -25,7 +31,10 @@ class HomeworkService
      */
     public function getLessonFinishInfo($lessonId)
     {
-
+        $info = DB::table($this->tableName)
+            ->where('lesson_id',$lessonId)
+            ->get();
+        return $info;
     }
 
 
@@ -157,5 +166,4 @@ class HomeworkService
             ->value('teacher_id');
         return ($trueTeacherId == $teacherId);
     }
-
 }
