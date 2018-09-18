@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Tools\SqlTool;
 use Carbon\Carbon;
+use ClassesWithParents\D;
 use Illuminate\Support\Facades\DB;
 
 class HomeworkService
@@ -26,32 +27,40 @@ class HomeworkService
         return false;
     }
 
-    public function getStuHomeworkByClassId($stuId,$classId){
+    public function getStuHomeworkByClassId($stuId, $classId)
+    {
         $homework = DB::table('lessons')
-            ->where('class_id','=',$classId)
-            ->leftJoin($this->tableName,'lessons.id','=',$this->tableName.'.lessonId')
-            ->where($this->tableName.'.user_id','=',$stuId)
+            ->where('class_id', '=', $classId)
+            ->leftJoin($this->tableName, 'lessons.id', '=', $this->tableName . '.lessonId')
+            ->where($this->tableName . '.user_id', '=', $stuId)
             ->get();
         return $homework;
     }
 
-    public function getLessonFinishUserCountByClassId($classId){
+    public function getLessonFinishUserCountByClassId($classId)
+    {
         $data = DB::table('lessons')
-            ->where('class_id','=',$classId)
-            ->join($this->tableName,'lessons.id','=',$this->tableName.'.lesson_id')
+            ->where('class_id', '=', $classId)
+            ->join($this->tableName, 'lessons.id', '=', $this->tableName . '.lesson_id')
             ->select(DB::raw('lessons.*, count(*) as finish_num'))
             ->groupBy('lessons.id')
             ->get();
         return $data;
     }
 
-    public function getFinishUserByLessonId($lessonId){
-        $stus = DB::table($this->tableName)
-            ->where('lesson_id','=',$lessonId)
-            ->join('users',$this->tableName.'.user_id','=','users.id')
+    public function getUnFinishUserByLessonId($lessonId)
+    {
+        $classId = DB::table('lessons')
+            ->where('id', '=', $lessonId)
+            ->value('class_id');
+        $stus = DB::table('user_class_relations')
+            ->where('class_id','=',$classId)
+            ->leftJoin($this->tableName,'user_class_relations.user_id','=',$this->tableName.'.user_id')
+            ->where($this->tableName.'.user_id','=',null)
+            ->join('users','users.id','=','user_class_relations.user_id')
             ->select('users.*')
             ->get();
-        foreach ($stus as $stu){
+        foreach ($stus as $stu) {
             unset($stu->password);
             unset($stu->coin);
             unset($stu->is_stu);
@@ -59,12 +68,30 @@ class HomeworkService
         }
         return $stus;
     }
+
+    public function getFinishUserByLessonId($lessonId)
+    {
+        $stus = DB::table($this->tableName)
+            ->where('lesson_id', '=', $lessonId)
+            ->join('users', $this->tableName . '.user_id', '=', 'users.id')
+            ->select('users.*')
+            ->get();
+        foreach ($stus as $stu) {
+            unset($stu->password);
+            unset($stu->coin);
+            unset($stu->is_stu);
+            unset($stu->is_teacher);
+        }
+        return $stus;
+    }
+
     /**
      * 获取课程整体作业完成情况 todo 暂时不用
      * @param $classId
      * @return mixed
      */
-    public function getClassFinishInfo($classId){
+    public function getClassFinishInfo($classId)
+    {
         $info = DB::table('lessons')
             ->where('class_id', $classId)
             ->join($this->tableName, 'lessons.id', '=', $this->tableName . '.lesson_id')

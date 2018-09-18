@@ -122,8 +122,19 @@ class HomeworkController extends Controller
         ]);
     }
     //TODO 获取某课时的未完成人员名单
-    public function getHomeworkNoFinishUser(){
-
+    public function getHomeworkNoFinishUser(Request $request){
+        $lessonId = $request->input('lesson_id',null);
+        if ($lessonId == null){
+            return response()->json(Code::PARAM_ERROR);
+        }
+        $data = $this->homeworkService->getUnFinishUserByLessonId($lessonId);
+        return response()->json([
+            'code'=>0,
+            'message' => 'success',
+            'data' => [
+                'users' => $data
+            ]
+        ]);
     }
 
 
