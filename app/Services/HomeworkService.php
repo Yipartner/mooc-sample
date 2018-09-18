@@ -4,7 +4,6 @@ namespace App\Services;
 
 use App\Tools\SqlTool;
 use Carbon\Carbon;
-use ClassesWithParents\D;
 use Illuminate\Support\Facades\DB;
 
 class HomeworkService
