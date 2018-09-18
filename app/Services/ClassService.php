@@ -81,16 +81,35 @@ class ClassService
     public function buyClass($userId, $classId)
     {
         $time = new Carbon();
-        $res = DB::table('user_class_relations')->insert([
+        $res = DB::table('user_class_relations')->insertGetId([
             'user_id' => $userId,
             'class_id' => $classId,
             'created_at' => $time
         ]);
+        return $res;
     }
 
     public function getClassByLessonId($lessonId){
         return DB::table('lessons')
             ->where('id',$lessonId)
             ->value('class_id');
+    }
+
+    public function isBuyOrNot($classId)
+    {
+        $res = $this->getClassBuyersNum($classId);
+        return $res > 0;
+    }
+
+    public function getClassLessonNum($classId)
+    {
+        $lessonsNum = DB::table('lessons')->where('class_id', $classId)->count();
+        return $lessonsNum;
+    }
+
+    public function getClassBuyersNum($classId)
+    {
+        $buyersNum = DB::table('user_class_relations')->where('class_id',$classId)->count();
+        return $buyersNum;
     }
 }
