@@ -21,8 +21,163 @@ class HomeworkController extends Controller
         $this->classService = $classService;
         $this->lessonService = $lessonService;
     }
+    /***************************************************学生端*****************************************************/
 
-    /*手动接口*/
+
+    //TODO 获取学生所有课程的作业完成情况
+    public function getStuAllClassHomeworkStatus(Request $request){
+
+    }
+
+    /**
+     * 获取学生某一课程的作业完成情况
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getStuHomeworkByClassId(Request $request){
+        $classId = $request->input('class_id',null);
+        if ($classId == null){
+            return response()->json(Code::PARAM_ERROR);
+        }
+        $stu = $request->user;
+        $homework = $this->homeworkService->getStuHomeworkByClassId($stu->id,$classId);
+        $data =[];
+        foreach ($homework as $item) {
+            $h = [
+                'id'=>$item->id,
+                'name'=> $item->name,
+            ];
+            if (empty($item->id)){
+                $h['status'] = false;
+            }else{
+                $h['status'] = true;
+            }
+            array_push($data,$h);
+        }
+        return response()->json([
+            'code'=> 0,
+            'message' => 'success',
+            'data'=> [
+                'homework'=> $data
+            ]
+        ]);
+
+    }
+
+    /**
+     * 判断学生指定课时是否完成
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function isStuHomeworkFinish(Request $request){
+        $lessonId = $request->input('homework_id',null);
+        if ($lessonId == null){
+            return response()->json(Code::PARAM_ERROR);
+        }
+        $stu = $request->user;
+        $check = $this->homeworkService->isStuFinishHomework($stu->id,$lessonId);
+        return response()->json([
+            'code' => 0,
+            'message' => 'success',
+            'data'=> [
+                'check' => $check
+            ]
+        ]);
+    }
+
+    /***************************************************教师端***************************************************/
+    //TODO 获取教师某课程所有课时的作业完成情况
+    public function getTeacherClassFinishStatus(Request $request){
+        $classId = $request->input('class_id',null);
+        if ($classId == null){
+            return response()->json(Code::PARAM_ERROR);
+        }
+        $data = $this->homeworkService->getLessonFinishUserCountByClassId($classId);
+        //todo 根据classId 获取 购买该课程的 user总数
+        $num = 10;
+        foreach ($data as $item){
+            $item->rate = $item->finish_num / $num;
+        }
+        return response()->json([
+            'code' => 0,
+            'message' => 'success',
+            'data'=>[
+                'status'=> $data
+            ]
+        ]);
+    }
+    //TODO 获取某课时的完成人员名单
+    public function getHomeworkFinishUser(Request $request){
+        $lessonId = $request->input('lesson_id',null);
+        if ($lessonId == null){
+            return response()->json(Code::PARAM_ERROR);
+        }
+        $data = $this->homeworkService->getFinishUserByLessonId($lessonId);
+        return response()->json([
+            'code'=>0,
+            'message' => 'success',
+            'data' => [
+                'users' => $data
+            ]
+        ]);
+    }
+    //TODO 获取某课时的未完成人员名单
+    public function getHomeworkNoFinishUser(){
+
+    }
+
+
+    /*操作接口*/
+
+    /**
+     * 获取课程所有课时的作业的作业完成情况 todo 暂时不用
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getClassHomeworkStatus(Request $request){
+        $teacher = $request->user;
+        $classId = $request->input('classId',null);
+        if ($classId==null){
+            return response()->json(Code::PARAM_ERROR);
+        }
+        if (!$this->classService->isOwner($classId,$teacher->id)){
+            return response()->json(Code::NO_PERMISSION);
+        }
+        $homeworkStatus=$this->homeworkService->getClassFinishInfo($classId);
+        return response()->json([
+            'code' => 0,
+            'message' => 'success',
+            'data'=>[
+                'homework_status'=>$homeworkStatus
+            ]
+        ]);
+    }
+
+    /**
+     * 获取单次课时的所有作业完成情况 todo 暂时不用
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getLessonHomeworkStatus(Request $request){
+        $teacher = $request->user;
+        $lessonId = $request->input('lessonId',null);
+        if ($lessonId == null){
+            return response()->json(Code::PARAM_ERROR);
+        }
+        if (!$this->classService->isOwner($this->classService->getClassByLessonId($lessonId),$teacher->id)){
+            return response()->json(Code::NO_PERMISSION);
+        }
+        $homeworkStatus = $this->homeworkService->getLessonFinishInfo($lessonId);
+        return response()->json([
+            'code'=>0,
+            'message' => 'success',
+            'data'=>[
+                'homework_status'=>$homeworkStatus
+            ]
+        ]);
+    }
+
+
 
     /**
      * 添加单条作业完成记录

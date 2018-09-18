@@ -11,28 +11,77 @@ class HomeworkService
 
     private $tableName = 'homework_user_relations';
 
-    /**
-     * 获取课程整体作业完成情况
-     * @param $classId
-     */
-    public function getClassFinishInfo($classId)
+
+    public function isStuFinishHomework($userId, $lessonId)
     {
-        $info = DB::table('lessons')
-            ->where('class_id',$classId)
+        if (
+        DB::table($this->tableName)->where([
+            ['lesson_id', '=', $lessonId],
+            ['user_id', '=', $userId]
+        ])->first()
+
+        ) {
+            return true;
+        }
+        return false;
+    }
+
+    public function getStuHomeworkByClassId($stuId,$classId){
+        $homework = DB::table('lessons')
+            ->where('class_id','=',$classId)
+            ->leftJoin($this->tableName,'lessons.id','=',$this->tableName.'.lessonId')
+            ->where($this->tableName.'.user_id','=',$stuId)
+            ->get();
+        return $homework;
+    }
+
+    public function getLessonFinishUserCountByClassId($classId){
+        $data = DB::table('lessons')
+            ->where('class_id','=',$classId)
             ->join($this->tableName,'lessons.id','=',$this->tableName.'.lesson_id')
-            ->select($this->tableName.'.*')
+            ->select(DB::raw('lessons.*, count(*) as finish_num'))
+            ->groupBy('lessons.id')
+            ->get();
+        return $data;
+    }
+
+    public function getFinishUserByLessonId($lessonId){
+        $stus = DB::table($this->tableName)
+            ->where('lesson_id','=',$lessonId)
+            ->join('users',$this->tableName.'.user_id','=','users.id')
+            ->select('users.*')
+            ->get();
+        foreach ($stus as $stu){
+            unset($stu->password);
+            unset($stu->coin);
+            unset($stu->is_stu);
+            unset($stu->is_teacher);
+        }
+        return $stus;
+    }
+    /**
+     * 获取课程整体作业完成情况 todo 暂时不用
+     * @param $classId
+     * @return mixed
+     */
+    public function getClassFinishInfo($classId){
+        $info = DB::table('lessons')
+            ->where('class_id', $classId)
+            ->join($this->tableName, 'lessons.id', '=', $this->tableName . '.lesson_id')
+            ->select($this->tableName . '.*')
             ->get();
         return $info;
     }
 
     /**
-     * 获取单节课时作业完成情况
+     * 获取单节课时作业完成情况 todo 暂时不用
      * @param $lessonId
+     * @return mixed
      */
     public function getLessonFinishInfo($lessonId)
     {
         $info = DB::table($this->tableName)
-            ->where('lesson_id',$lessonId)
+            ->where('lesson_id', $lessonId)
             ->get();
         return $info;
     }
@@ -79,9 +128,10 @@ class HomeworkService
      * 删除单个作业完成记录
      * @param $homework
      */
-    public function removeOneHomework($homework){
+    public function removeOneHomework($homework)
+    {
         DB::table($this->tableName)
-            ->where('id',$homework)
+            ->where('id', $homework)
             ->delete();
     }
 
@@ -146,9 +196,10 @@ class HomeworkService
      * @param $classNum
      * @return mixed
      */
-    public function getClassIdByClassNum($classNum){
+    public function getClassIdByClassNum($classNum)
+    {
         return DB::table('classes')
-            ->where('class_num',$classNum)
+            ->where('class_num', $classNum)
             ->value('id');
     }
 
@@ -158,11 +209,12 @@ class HomeworkService
      * @param $homeworkId
      * @return bool
      */
-    public function canTeacherEditHomework($teacherId,$homeworkId){
+    public function canTeacherEditHomework($teacherId, $homeworkId)
+    {
         $trueTeacherId = DB::table($this->tableName)
-            ->where('id',$homeworkId)
-            ->join('lessons','lessons.id','=',$this->tableName.'.lesson_id')
-            ->join('classes','lessons.class_id','=','classes.id')
+            ->where('id', $homeworkId)
+            ->join('lessons', 'lessons.id', '=', $this->tableName . '.lesson_id')
+            ->join('classes', 'lessons.class_id', '=', 'classes.id')
             ->value('teacher_id');
         return ($trueTeacherId == $teacherId);
     }
