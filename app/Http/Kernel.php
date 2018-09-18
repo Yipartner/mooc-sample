@@ -2,6 +2,7 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\ApiCheck;
 use App\Http\Middleware\EnableCrossRequestMiddleware;
 use App\Http\Middleware\TeacherMiddleware;
 use App\Http\Middleware\TokenMiddleware;
@@ -63,5 +64,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'token' => TokenMiddleware::class,
         'teacher' => TeacherMiddleware::class,
+        'open_api'=>ApiCheck::class,
     ];
 }

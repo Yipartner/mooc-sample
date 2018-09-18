@@ -16,3 +16,5 @@ Route::get('/', function () {
 });
 
 require_once "user.php";
+
+require_once "homework.php";
