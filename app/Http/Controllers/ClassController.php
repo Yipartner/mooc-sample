@@ -104,5 +104,15 @@ class ClassController extends Controller
         ]);
     }
 
+    public function getClassLessons($id, Request $request)
+    {
+        $lessonsList = $this->classService->getClassLessons($id);
+        return response()->json([
+            'code' => 0,
+            'message' => 'get my class success',
+            'class_list' => $lessonsList
+        ]);
+    }
+
 
 }

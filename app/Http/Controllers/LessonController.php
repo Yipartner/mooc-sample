@@ -75,8 +75,24 @@ class LessonController extends Controller
         return response()->json(Code::SUCCESS);
     }
 
+    public function getLessonInfo($id, Request $request)
+    {
+        $lessonInfo = $this->lessonService->getLessonInfoById($id);
+        return response()->json([
+           'code' => 0,
+           'message' => 'get lesson info success',
+           'lesson_info' => $lessonInfo
+        ]);
+    }
 
-
-
+    public function deleteLesson($id, Request $request)
+    {
+        $userInfo = $request->user;
+        $classId = $this->lessonService->getLessonClassId($id);
+        if(!$this->classService->isOwner($classId,$userInfo->id))
+            return response()->json(Code::NO_PERMISSION);
+        $this->lessonService->deleteLesson($id);
+        return response()->json(Code::SUCCESS);
+    }
 
 }
