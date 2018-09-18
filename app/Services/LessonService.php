@@ -63,4 +63,10 @@ class LessonService
             ->join('classes','classes.id','=','lessons.class_id')
             ->value('classes.teacher_id');
     }
+
+    public function getLessonClassId($lessonId)
+    {
+        $classId = DB::table($this->tbName)->where('id', $lessonId)->value('class_id');
+        return $classId;
+    }
 }

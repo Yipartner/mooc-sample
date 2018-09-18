@@ -97,7 +97,19 @@ class ClassService
 
     public function isBuyOrNot($classId)
     {
-        $res = DB::table('user_class_relations')->where('class_id',$classId)->count();
+        $res = $this->getClassBuyersNum($classId);
         return $res > 0;
+    }
+
+    public function getClassLessonNum($classId)
+    {
+        $lessonsNum = DB::table('lessons')->where('class_id', $classId)->count();
+        return $lessonsNum;
+    }
+
+    public function getClassBuyersNum($classId)
+    {
+        $buyersNum = DB::table('user_class_relations')->where('class_id',$classId)->count();
+        return $buyersNum;
     }
 }

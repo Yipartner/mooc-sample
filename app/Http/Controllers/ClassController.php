@@ -34,6 +34,12 @@ class ClassController extends Controller
         if (!$userInfo->is_teacher)
             return response()->json(Code::NO_PERMISSION);
         $classRule = $this->classRule;
+        $res = ValidationHelper::validateCheck($request->all(), $classRule);
+        if ($res->fails())
+            return response()->json([
+                'code' => 201,
+                'message' => $res->errors()
+            ]);
         $classInfo = ValidationHelper::getInputData($request, $classRule);
         $classId = $this->classService->createClass($userInfo->id, $classInfo);
         return response()->json([
@@ -54,6 +60,12 @@ class ClassController extends Controller
         }
         if (!$this->classService->isOwner($id, $userInfo->id))
             return response()->json(Code::NO_PERMISSION);
+        $res = ValidationHelper::validateCheck($request->all(), $rule);
+        if ($res->fails())
+            return response()->json([
+                'code' => 201,
+                'message' => $res->errors()
+            ]);
         $classInfo = ValidationHelper::getInputData($request, $rule);
         $this->classService->createClass($userInfo->id, $classInfo);
         return response()->json(Code::SUCCESS);
