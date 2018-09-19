@@ -9,7 +9,7 @@ Route::get('/homework/teacher/status/byclass','HomeworkController@getTeacherClas
 Route::get('/homework/teacher/finishuser/bylesson','HomeworkController@getHomeworkFinishUser')->middleware('token');
 Route::get('/homework/teacher/unfinishuser/bylesson','HomeworkController@getHomeworkNoFinishUser')->middleware('token');
 
-Route::post('/api/homework/finish/one','HomeworkController@finishOneHomework')->middleware('open_api');
-Route::post('/api/homework/finish/many','HomeworkController@finishManyHomework')->middleware('open_api');
-Route::post('/api/homework/remove/one','HomeworkController@removeOneHomework')->middleware('open_api');
-Route::post('/api/homework/remove/many','HomeworkController@removeHomework')->middleware('open_api');
+Route::post('/homework/finish/one','HomeworkController@finishOneHomework')->middleware(['token','teacher']);
+Route::post('/homework/finish/many','HomeworkController@finishManyHomework')->middleware(['token','teacher']);
+Route::post('/homework/remove/one','HomeworkController@removeOneHomework')->middleware(['token','teacher']);
+Route::post('/homework/remove/many','HomeworkController@removeHomework')->middleware(['token','teacher']);

@@ -26,7 +26,7 @@ class UserService
 
         $time = new Carbon();
         $userInfo['name'] = "user" . uniqid();
-        $userInfo['password'] = bcrypt($userInfo['password']);
+        $userInfo['password'] = md5($userInfo['password']);
         $userInfo['coin'] = 0;
         if ($userInfo['is_teacher'] == 1){
             $userInfo['is_teacher'] = 1;
@@ -50,7 +50,7 @@ class UserService
         if ($user == null)
             return -1;
 
-        if (! Hash::check($password, $user->password))
+        if ($password != $user->password)
             return -2;
         else
             return $user->id;
