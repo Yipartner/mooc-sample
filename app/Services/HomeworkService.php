@@ -130,7 +130,8 @@ class HomeworkService
         DB::table($this->tableName)
             ->insert([
                 'user_id' => $userId,
-                'lesson_id' => $lessonId
+                'lesson_id' => $lessonId,
+                'created_at'=>Carbon::now()
             ]);
     }
 

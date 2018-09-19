@@ -65,7 +65,8 @@ class ClassService
     public function isOwner($classId, $userId)
     {
         $res = DB::table($this->tbName)->where('id', $classId)->value('teacher_id');
-        return $res === $userId;
+        dd($classId,$res);
+        return $res == $userId;
     }
 
     public function buyClassOrNot($classId, $userId)
