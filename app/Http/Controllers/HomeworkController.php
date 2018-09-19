@@ -41,24 +41,22 @@ class HomeworkController extends Controller
         }
         $stu = $request->user;
         $homework = $this->homeworkService->getStuHomeworkByClassId($stu->id,$classId);
-        $data =[];
+        $lessons = $this->classService->getClassLessons($classId);
+        foreach ($lessons as $lesson){
+            $lesson->finish_status = false;
+        }
         foreach ($homework as $item) {
-            $h = [
-                'id'=>$item->id,
-                'name'=> $item->name,
-            ];
-            if (empty($item->id)){
-                $h['status'] = false;
-            }else{
-                $h['status'] = true;
+            foreach ($lessons as $lesson){
+                if ($lesson->id == $item){
+                    $lesson->finish_status = true;
+                }
             }
-            array_push($data,$h);
         }
         return response()->json([
             'code'=> 0,
             'message' => 'success',
             'data'=> [
-                'homework'=> $data
+                'homework'=> $lessons
             ]
         ]);
 
@@ -70,7 +68,7 @@ class HomeworkController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function isStuHomeworkFinish(Request $request){
-        $lessonId = $request->input('homework_id',null);
+        $lessonId = $request->input('lesson_id',null);
         if ($lessonId == null){
             return response()->json(Code::PARAM_ERROR);
         }
@@ -94,7 +92,7 @@ class HomeworkController extends Controller
         }
         $data = $this->homeworkService->getLessonFinishUserCountByClassId($classId);
         //todo 根据classId 获取 购买该课程的 user总数
-        $num = 10;
+        $num = $this->classService->getClassBuyersNum($classId);
         foreach ($data as $item){
             $item->rate = $item->finish_num / $num;
         }

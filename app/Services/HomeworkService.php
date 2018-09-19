@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Tools\SqlTool;
 use Carbon\Carbon;
+use ClassesWithParents\D;
 use Illuminate\Support\Facades\DB;
 
 class HomeworkService
@@ -30,9 +31,9 @@ class HomeworkService
     {
         $homework = DB::table('lessons')
             ->where('class_id', '=', $classId)
-            ->leftJoin($this->tableName, 'lessons.id', '=', $this->tableName . '.lessonId')
+            ->Join($this->tableName, 'lessons.id', '=', $this->tableName . '.lesson_id')
             ->where($this->tableName . '.user_id', '=', $stuId)
-            ->get();
+            ->pluck('lessons.id');
         return $homework;
     }
 
@@ -54,8 +55,12 @@ class HomeworkService
             ->value('class_id');
         $stus = DB::table('user_class_relations')
             ->where('class_id','=',$classId)
-            ->leftJoin($this->tableName,'user_class_relations.user_id','=',$this->tableName.'.user_id')
-            ->where($this->tableName.'.user_id','=',null)
+            ->whereNotExists(function ($query)use ($lessonId){
+                $query->select(DB::raw(1))
+                    ->from('homework_user_relations')
+                    ->where('homework_user_relations.lesson_id','=',$lessonId)
+                    ->whereRaw('homework_user_relations.user_id = user_class_relations.user_id');
+            })
             ->join('users','users.id','=','user_class_relations.user_id')
             ->select('users.*')
             ->get();
