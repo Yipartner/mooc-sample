@@ -18,3 +18,7 @@ Route::get('/', function () {
 require_once "user.php";
 
 require_once "homework.php";
+
+include "class.php";
+include "lesson.php";
+include "media.php";

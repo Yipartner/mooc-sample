@@ -14,14 +14,19 @@ class MediaController extends Controller
 
     private $mediaService;
 
-    private $accessKey = 'klZ0v30G98DYVipuVm84dibueYGQnuop8RPrbDk2';
-    private $secretKey = 'bcQFExbIZhU-TzcZB2iqQ5K2Zn8dAh1G2pVA-ReG';
-    private $bucket = 'test';
-    private $domain = 'ov8i0dn6x.bkt.clouddn.com/';
+    private $accessKey;
+    private $secretKey;
+    private $bucket;
+    private $domain;
 
     public function __construct(MediaService $mediaService)
     {
         $this->mediaService = $mediaService;
+        $this->accessKey = env('QINIU_ACCESS_KEY');
+        $this->secretKey = env('QINIU_SECRET_KEY');
+        $this->bucket = env('QINIU_BUCKET');
+        $this->domain = env('QINIU_DOMAIN');
+
     }
 
     public function makeUploadToken(Request $request)
