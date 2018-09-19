@@ -101,6 +101,12 @@ class ClassService
         return $res > 0;
     }
 
+    public function getClassLessons($classId)
+    {
+        $lessonList = DB::table('lessons')->where('class_id', $classId)->get();
+        return $lessonList;
+    }
+
     public function getClassLessonNum($classId)
     {
         $lessonsNum = DB::table('lessons')->where('class_id', $classId)->count();
