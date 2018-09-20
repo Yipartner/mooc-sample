@@ -51,17 +51,20 @@ class LessonService
         DB::table($this->tbName)->where('id', $lessonId)->delete();
     }
 
-    public function updateLessionMovie($lessonId, $movieId)
+    public function updateLessonMovie($lessonId, $movieId)
     {
         DB::table($this->tbName)->where('id', $lessonId)->update([
             'movie_id' => $movieId
         ]);
     }
-    public function getLessonOwner($lessonId){
-        return DB::table($this->tbName)
-            ->where('id',$lessonId)
-            ->join('classes','classes.id','=','lessons.class_id')
+
+    public function getLessonOwner($lessonId)
+    {
+        $owner = DB::table($this->tbName)
+            ->where('lessons.id', $lessonId)
+            ->join('classes', 'classes.id', '=', 'lessons.class_id')
             ->value('classes.teacher_id');
+        return $owner;
     }
 
     public function getLessonClassId($lessonId)

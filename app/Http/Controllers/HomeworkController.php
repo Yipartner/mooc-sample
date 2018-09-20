@@ -201,7 +201,7 @@ class HomeworkController extends Controller
         if ($userId == null || $lessonId == null) {
             return response()->json(Code::PARAM_ERROR);
         }
-        if (!$this->classService->isOwner($this->lessonService->getLessonOwner($lessonId), $teacher->id)) {
+        if ($this->lessonService->getLessonOwner($lessonId) != $teacher->id) {
             return response()->json(Code::NO_PERMISSION);
         }
         $this->homeworkService->finishOneHomework($userId, $lessonId);
