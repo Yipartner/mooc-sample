@@ -54,10 +54,9 @@ class MediaController extends Controller
                 'code' => '202',
                 'message' => '文件名已存在'
             ]);
-        $mediaInfo = [
-            'url' => 'http://'.$this->domain . $fileName,
-            'name' => $fileName,
-        ];
+        $mediaInfo = array_merge($mediaInfo, [
+            'file_url' => 'http://'.$this->domain . $fileName,
+        ]);
         $auth = new Auth($this->accessKey, $this->secretKey);
         $expires = 3600;
         $fileLocation = base64_urlSafeEncode($this->bucket . ":" . $fileName);
@@ -82,7 +81,9 @@ class MediaController extends Controller
 
     public function callback(Request $request)
     {
-        $mediaInfo = $request->mp4Info;
+        $mediaInfo = [];
+        $mediaInfo['name'] = $request->mp4Info['file_name'];
+        $mediaInfo['url'] = $request->mp4Info['file_url'];
         $mediaInfo['status_id'] = $request->persistentId;
 
         $mediaId = $this->mediaService->createMedia($mediaInfo);
