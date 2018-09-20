@@ -94,8 +94,6 @@ class MediaController extends Controller
 
     public function notify(Request $request)
     {
-        $this->mediaService->updateMedia($request->id,[
-            'status' =>  $request->code
-        ]);
+        $this->mediaService->updateMediaStatus($request->id,$request->code);
     }
 }
