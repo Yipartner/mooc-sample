@@ -48,15 +48,15 @@ class MediaController extends Controller
             ]);
         $mediaInfo = ValidationHelper::getInputData($request, $rule);
         $fileName = $mediaInfo['file_name'];
-        $saveKey = $fileName. '_'. time() . str_random(10);
+        $saveKey = time() . str_random(10).'_'. $fileName;
         if($this->mediaService->isMediaExist($fileName))
             return response()->json([
                 'code' => '202',
                 'message' => '文件名已存在'
             ]);
-        $mediaInfo = array_merge($mediaInfo, [
-            'file_url' => 'http://'.$this->domain . $fileName,
-            'file_name' => $fileName,
+        $mediaInfo = [
+            'url' => 'http://'.$this->domain . $fileName,
+            'name' => $fileName,
         ]);
         $auth = new Auth($this->accessKey, $this->secretKey);
         $expires = 3600;
@@ -68,7 +68,7 @@ class MediaController extends Controller
             'saveKey' => $saveKey,
             'callbackUrl' => $this->callbackUrl.'/upload/callback',
             'callbackBody' => '{"persistentId":"$(persistentId)","mp4Info":' . json_encode($mediaInfo) . '}',
-            'callbackBodyType' => 'application/json',
+            'callbackBodyType' => 'applica zzztion/json',
             'persistentOps' => $videoDeal,
             'persistentPipeline' => "video-pipe",
             'persistentNotifyUrl' => $this->callbackUrl.'/notify'
@@ -82,9 +82,8 @@ class MediaController extends Controller
 
     public function callback(Request $request)
     {
-        $status = $request->persistentId;
         $mediaInfo = $request->mp4Info;
-        $mediaInfo['is_available'] = $status;
+        $mediaInfo['status_id'] = $request->persistentId;
 
         $mediaId = $this->mediaService->createMedia($mediaInfo);
         return response()->json([
