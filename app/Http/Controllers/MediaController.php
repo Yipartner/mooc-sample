@@ -66,7 +66,7 @@ class MediaController extends Controller
             'saveKey' => $saveKey,
             'callbackUrl' => $this->callbackUrl.'/upload/callback',
             'callbackBody' => '{"persistentId":"$(persistentId)","mp4Info":' . json_encode($mediaInfo) . '}',
-            'callbackBodyType' => 'applica zzztion/json',
+            'callbackBodyType' => 'application/json',
             'persistentOps' => $videoDeal,
             'persistentPipeline' => "video-pipe",
             'persistentNotifyUrl' => $this->callbackUrl.'/notify'
