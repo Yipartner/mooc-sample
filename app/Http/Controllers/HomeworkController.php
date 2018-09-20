@@ -6,6 +6,7 @@ use App\Services\ClassService;
 use App\Services\HomeworkService;
 use App\Services\LessonService;
 use App\Tools\Code;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class HomeworkController extends Controller
@@ -222,15 +223,17 @@ class HomeworkController extends Controller
         if ($lessonId == null || $users == null) {
             return response()->json(Code::PARAM_ERROR);
         }
-        if (!$this->classService->isOwner($this->lessonService->getLessonOwner($lessonId), $teacher->id)) {
+        if ($this->lessonService->getLessonOwner($lessonId)!= $teacher->id) {
             return response()->json(Code::NO_PERMISSION);
         }
         $users = explode(',', $users);
         $data = [];
+        $time = Carbon::now();
         foreach ($users as $user) {
             array_push($data, [
                 'user_id' => $user,
-                'lesson_id' => $lessonId
+                'lesson_id' => $lessonId,
+                'created_at'=>$time
             ]);
         }
         $this->homeworkService->finishManyHomework($data);
@@ -244,24 +247,28 @@ class HomeworkController extends Controller
      */
     public function removeHomework(Request $request)
     {
-        $homeworkIds = $request->input('homework', null);
-        if ($homeworkIds == null || !is_array($homeworkIds)) {
+        $users = $request->input('users', null);
+        $lessonId = $request->input('lessonId',null);
+        if ($users == null || $lessonId == null){
             return response()->json(Code::PARAM_ERROR);
         }
-        $this->homeworkService->removeFinishHomework($homeworkIds);
+        $users = explode(',', $users);
+        $this->homeworkService->removeFinishHomework($users,$lessonId);
         return response()->json(Code::SUCCESS);
     }
 
     public function removeOneHomework(Request $request){
         $teacher = $request->user;
-        $homeworkId = $request->input('homework',null);
-        if ($homeworkId == null){
+        $lessonId = $request->input('lessonId',null);
+        $userId = $request->input('userId',null);
+        if ($lessonId == null){
             return response()->json(Code::PARAM_ERROR);
         }
-        if (!$this->homeworkService->canTeacherEditHomework($teacher->id,$homeworkId)){
+        if ($this->lessonService->getLessonOwner($lessonId)!= $teacher->id){
             return response()->json(Code::NO_PERMISSION);
         }
-        $this->homeworkService->removeOneHomework($homeworkId);
+
+        $this->homeworkService->removeOneHomework($userId,$lessonId);
         return response()->json(Code::SUCCESS);
     }
 
