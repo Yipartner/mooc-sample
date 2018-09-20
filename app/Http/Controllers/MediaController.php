@@ -34,8 +34,7 @@ class MediaController extends Controller
     public function makeUploadToken(Request $request)
     {
         $userInfo = $request->user;
-        if(!$userInfo->is_teacher)
-            return response()->json(Code::NO_PERMISSION);
+
         $rule = [
             'file_name' => 'required',
             'lesson_id' => 'required'
