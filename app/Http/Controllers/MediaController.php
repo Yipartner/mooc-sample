@@ -57,7 +57,7 @@ class MediaController extends Controller
         $mediaInfo = [
             'url' => 'http://'.$this->domain . $fileName,
             'name' => $fileName,
-        ]);
+        ];
         $auth = new Auth($this->accessKey, $this->secretKey);
         $expires = 3600;
         $fileLocation = base64_urlSafeEncode($this->bucket . ":" . $fileName);
