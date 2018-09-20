@@ -147,23 +147,27 @@ class HomeworkService
 
     /**
      * 批量删除作业完成记录
-     * @param $homework
+     * @param array $user
+     * @param $lessonId
      */
-    public function removeFinishHomework(array $homework)
+    public function removeFinishHomework(array $user,$lessonId)
     {
         DB::table($this->tableName)
-            ->whereIn('id', $homework)
+            ->whereIn('user_id', $user)
+            ->where('lesson_id',$lessonId)
             ->delete();
     }
 
     /**
      * 删除单个作业完成记录
-     * @param $homework
+     * @param $user
+     * @param $lessonId
      */
-    public function removeOneHomework($homework)
+    public function removeOneHomework($user,$lessonId)
     {
         DB::table($this->tableName)
-            ->where('id', $homework)
+            ->where('user_id', $user)
+            ->where('lesson_id',$lessonId)
             ->delete();
     }
 
@@ -244,7 +248,7 @@ class HomeworkService
     public function canTeacherEditHomework($teacherId, $homeworkId)
     {
         $trueTeacherId = DB::table($this->tableName)
-            ->where('id', $homeworkId)
+            ->where($this->tableName.'.id', $homeworkId)
             ->join('lessons', 'lessons.id', '=', $this->tableName . '.lesson_id')
             ->join('classes', 'lessons.class_id', '=', 'classes.id')
             ->value('teacher_id');

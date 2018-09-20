@@ -65,7 +65,6 @@ class ClassService
     public function isOwner($classId, $userId)
     {
         $res = DB::table($this->tbName)->where('id', $classId)->value('teacher_id');
-        dd($classId,$res);
         return $res == $userId;
     }
 
