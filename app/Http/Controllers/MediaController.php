@@ -18,6 +18,7 @@ class MediaController extends Controller
     private $secretKey;
     private $bucket;
     private $domain;
+    private $callbackUrl;
 
     public function __construct(MediaService $mediaService)
     {
@@ -26,6 +27,7 @@ class MediaController extends Controller
         $this->secretKey = env('QINIU_SECRET_KEY');
         $this->bucket = env('QINIU_BUCKET');
         $this->domain = env('QINIU_DOMAIN');
+        $this->callbackUrl = env('CALLBACK_URL');
 
     }
 
@@ -64,12 +66,12 @@ class MediaController extends Controller
         $videoDeal = "avthumb/m3u8/noDomain/0/domain/" . $url . "/vb/500k|saveas/" . $fileLocation;
         $policy = [
             'saveKey' => $saveKey,
-            'callbackUrl' => 'mooc.sealbaby.cn/upload/callback',
+            'callbackUrl' => $this->callbackUrl.'/upload/callback',
             'callbackBody' => '{"persistentId":"$(persistentId)","mp4Info":' . json_encode($mediaInfo) . '}',
             'callbackBodyType' => 'application/json',
             'persistentOps' => $videoDeal,
             'persistentPipeline' => "video-pipe",
-            'persistentNotifyUrl' => 'mooc.sealbaby.cn/notify'
+            'persistentNotifyUrl' => $this->callbackUrl.'/notify'
         ];
         $uploadToken = $auth->uploadToken($this->bucket, null, $expires, $policy,true);
         return response()->json([
