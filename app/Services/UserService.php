@@ -55,5 +55,29 @@ class UserService
         else
             return $user->id;
     }
+    public function loginForIdAndName($loginNum,$password){
+        $user = DB::table('users')->where('login_num',$loginNum)->first();
+
+        if ($user == null)
+            return -1;
+
+        if (md5($password) != $user->password){
+            return -2;
+        }
+        else{
+            $userInfo['id'] = $user->id;
+            $userInfo['name'] = $user->name;
+            return $userInfo;
+        }
+
+    }
+    public function editName($id,$name){
+        DB::table('users')->where('id',$id)->update(["name"=>$name]);
+        if (1){
+            return 0;
+        }else{
+            return -1;
+        }
+    }
 
 }
