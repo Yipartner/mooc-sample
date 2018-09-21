@@ -14,8 +14,11 @@
 Route::post('/register', "UserController@register");
 Route::post('/login', "UserController@login");
 Route::post('/login/other', "UserController@loginForIdAndName");
+Route::put('/resetpassword', "UserController@resetPassword")->middleware('token');
 Route::get('/user', "UserController@userDetail")->middleware('token');
 Route::put('/user', "UserController@editName")->middleware('token');
+Route::put('/recharge', "UserController@addCoin")->middleware('token');
+Route::put('/deductions', "UserController@delCoin")->middleware('token');
 Route::get('/ttt', function () {
     return view('welcome');
 })->middleware('teacher');

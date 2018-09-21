@@ -26,7 +26,7 @@ class UserService
 
         $time = new Carbon();
         $userInfo['name'] = "user" . uniqid();
-        $userInfo['password'] = md5($userInfo['password']);
+        $userInfo['password'] = bcrypt($userInfo['password']);
         $userInfo['coin'] = 0;
         if ($userInfo['is_teacher'] == 1){
             $userInfo['is_teacher'] = 1;
@@ -72,12 +72,59 @@ class UserService
 
     }
     public function editName($id,$name){
-        DB::table('users')->where('id',$id)->update(["name"=>$name]);
-        if (1){
+        if (DB::table('users')->where('id',$id)->update(["name"=>$name])){
             return 0;
         }else{
             return -1;
         }
     }
+    public function resetPassword($userId,$oldPassword,$newPassword)
+    {
+        $user = DB::table('users')->where('id', $userId)->first();
+        if (Hash::check($oldPassword, $user->password)) {
+            DB::table('users')->where('id',$userId)->update(["password"=>bcrypt($newPassword)]);
+            return true;
+        } else
+            return false;
+    }
+    public function addCoin($userId,$coin){
+        $user = DB::table('users')->where('id', $userId)->first();
+        $coin = intval($coin);
+        $oldCoin = intval($user->coin);
+        if ($coin <= 0){
+            return -1;
+        }
+        $newCoin = $oldCoin + $coin;
+        if (DB::table('users')->where('id',$userId)->update(["coin"=>$newCoin])){
+            return $newCoin;
+        }else{
+            return -2;
+        }
+
+    }
+    public function delCoin($userId,$coin){
+        $user = DB::table('users')->where('id', $userId)->first();
+        $coin = intval($coin);
+        $oldCoin = intval($user->coin);
+        if ($coin <= 0){
+            return -1;
+        }
+        $newCoin = $oldCoin - $coin;
+        if ($newCoin < 0){
+            return -3;
+        }
+        if (DB::table('users')->where('id',$userId)->update(["coin"=>$newCoin])){
+            return $newCoin;
+        }else{
+            return -2;
+        }
+
+    }
+//    public function forgotPassword($userId, $newPassword)
+//    {
+//        $this->updateUserInfo($userId,[
+//            'password' => bcrypt($newPassword)
+//        ]);
+//    }
 
 }
