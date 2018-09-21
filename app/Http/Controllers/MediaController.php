@@ -37,7 +37,7 @@ class MediaController extends Controller
 
         $rule = [
             'file_name' => 'required',
-            'lesson_id' => 'required'
+            'class_id' => 'required'
         ];
         $res = ValidationHelper::validateCheck($request->all(), $rule);
         if($res->fails())
@@ -54,7 +54,7 @@ class MediaController extends Controller
                 'message' => '文件名已存在'
             ]);
         $mediaInfo = array_merge($mediaInfo, [
-            'file_url' => 'http://'.$this->domain . $fileName,
+            'file_url' => 'http://'.$this->domain .'/'. $fileName,
         ]);
         $auth = new Auth($this->accessKey, $this->secretKey);
         $expires = 3600;
@@ -84,6 +84,7 @@ class MediaController extends Controller
         $mediaInfo['name'] = $request->mp4Info['file_name'];
         $mediaInfo['url'] = $request->mp4Info['file_url'];
         $mediaInfo['status_id'] = $request->persistentId;
+        $mediaInfo['class_id'] = $request->mp4Info['class_id'];
 
         $mediaId = $this->mediaService->createMedia($mediaInfo);
         return response()->json([
@@ -94,8 +95,6 @@ class MediaController extends Controller
 
     public function notify(Request $request)
     {
-        $this->mediaService->updateMedia($request->id,[
-            'status' =>  $request->code
-        ]);
+        $this->mediaService->updateMediaStatus($request->id,$request->code);
     }
 }

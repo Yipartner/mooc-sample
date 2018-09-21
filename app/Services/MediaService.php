@@ -31,6 +31,13 @@ class MediaService
         DB::table($this->tbName)->where('id', $mediaId)->update($mediaInfo);
     }
 
+    public function updateMediaStatus($statusId,$status)
+    {
+        DB::table($this->tbName)->where('status_id', $statusId)->update([
+            'status' => $status
+            ]);
+    }
+
     public function getMediaById($mediaId)
     {
         $mediaInfo = DB::table($this->tbName)->where('id', $mediaId)->first();
