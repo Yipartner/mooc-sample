@@ -43,11 +43,11 @@ class LessonController extends Controller
                 'message' => $res->errors()
             ]);
         $lessonInfo = ValidationHelper::getInputData($request, $rules);
-        $lessonId = $this->lessonService->createLesson($userInfo->id,$lessonInfo);
+        $lessonId = $this->lessonService->createLesson($lessonInfo);
         return response()->json([
             'code' => 0,
             'message' => 'create lesson Success',
-            'class_id' => $lessonId
+            'lesson_id' => $lessonId
         ]);
     }
 
@@ -55,7 +55,7 @@ class LessonController extends Controller
     {
         $userInfo = $request->user;
         $rules = [
-            'name' => '',
+            'name' => 'required',
             'content' => '',
             'movie_id' => '',
             'homework_content' => '',
@@ -93,6 +93,16 @@ class LessonController extends Controller
             return response()->json(Code::NO_PERMISSION);
         $this->lessonService->deleteLesson($id);
         return response()->json(Code::SUCCESS);
+    }
+
+    public function getLessonList($id,Request $request)
+    {
+        $lessonList = $this->lessonService->getLessonListByClassId($id);
+        return response()->json([
+            'code' => 0,
+            'message' => 'get class list success',
+            'lessons' => $lessonList
+        ]);
     }
 
 }

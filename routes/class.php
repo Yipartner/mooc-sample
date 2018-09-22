@@ -11,4 +11,4 @@ Route::put('/class/{id}', "ClassController@updateClass")->middleware(['token','t
 Route::get('/class/{id}', "ClassController@getClassInfo")->middleware(['token']);
 Route::get('/classes', "ClassController@getAllClassList")->middleware(['token']);
 Route::get('/myclass', "ClassController@getMyClassList")->middleware(['token','teacher']);
-Route::get('/lessonby/{id}', "ClassController@getClassLessons");
+Route::get('/lessonby/{id}', "ClassController@getClassLessons")->middleware(['token']);

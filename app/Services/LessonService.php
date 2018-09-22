@@ -15,11 +15,10 @@ class LessonService
 {
     private $tbName = 'lessons';
 
-    public function createLesson($teacherId, $lessonInfo)
+    public function createLesson($lessonInfo)
     {
         $time = new Carbon();
         $fullLessonInfo = array_merge($lessonInfo, [
-            'teacher_id' => $teacherId,
             'created_at' => $time,
             'updated_at' => $time
         ]);
