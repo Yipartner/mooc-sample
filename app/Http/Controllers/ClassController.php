@@ -31,8 +31,6 @@ class ClassController extends Controller
     public function createClass(Request $request)
     {
         $userInfo = $request->user;
-        if (!$userInfo->is_teacher)
-            return response()->json(Code::NO_PERMISSION);
         $classRule = $this->classRule;
         $res = ValidationHelper::validateCheck($request->all(), $classRule);
         if ($res->fails())
@@ -67,13 +65,21 @@ class ClassController extends Controller
                 'message' => $res->errors()
             ]);
         $classInfo = ValidationHelper::getInputData($request, $rule);
-        $this->classService->createClass($userInfo->id, $classInfo);
+        $this->classService->updateClass($userInfo->id, $classInfo);
         return response()->json(Code::SUCCESS);
     }
 
     public function getClassInfo($id, Request $request)
     {
+        $userInfo = $request->user;
         $classInfo = $this->classService->getClassInfoById($id);
+        if(!$this->classService->isOwner($id,$userInfo->id))
+        {
+            unset($classInfo->access_token);
+            unset($classInfo->class_secret);
+            unset($classInfo->class_num);
+            unset($classInfo->token_expired_at);
+        }
         return response()->json([
             'code' => 0,
             'message' => 'get class success',
@@ -84,6 +90,13 @@ class ClassController extends Controller
     public function getAllClassList(Request $request)
     {
         $classList = $this->classService->getAllClasses();
+        foreach ($classList as $classInfo)
+        {
+            unset($classInfo->access_token);
+            unset($classInfo->class_secret);
+            unset($classInfo->class_num);
+            unset($classInfo->token_expired_at);
+        }
         return response()->json([
             'code' => 0,
             'message' => 'get classes success',
@@ -94,8 +107,6 @@ class ClassController extends Controller
     public function getMyClassList(Request $request)
     {
         $userInfo = $request->user;
-        if (!$userInfo->is_teacher)
-            return response()->json(Code::NO_PERMISSION);
         $classList = $this->classService->getClassListByTeacherId($userInfo->id);
         return response()->json([
             'code' => 0,
