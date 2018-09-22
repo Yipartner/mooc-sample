@@ -44,6 +44,12 @@ class MediaService
         return $mediaInfo;
     }
 
+    public function getMediaListByClassId($classId)
+    {
+        $mediaList = DB::table($this->tbName)->where('class_id', $classId)->get();
+        return $mediaList;
+    }
+
     public function getMediaByName($mediaName)
     {
         $mediaInfo = DB::table($this->tbName)->where('name', $mediaName)->first();

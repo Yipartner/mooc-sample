@@ -9,3 +9,4 @@
 Route::get('/upload/token','MediaController@makeUploadToken')->middleware('token');
 Route::post('/upload/callback','MediaController@callback');
 Route::post('/notify','MediaController@notify');
+Route::get('/medias/{id}','MediaController@getMediaListByClassId')->middleware('token');

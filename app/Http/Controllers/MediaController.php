@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\ClassService;
 use App\Services\MediaService;
 use App\Tools\Code;
 use App\Tools\ValidationHelper;
@@ -13,16 +14,18 @@ class MediaController extends Controller
 {
 
     private $mediaService;
-
+    private $classService;
     private $accessKey;
     private $secretKey;
     private $bucket;
     private $domain;
     private $callbackUrl;
 
-    public function __construct(MediaService $mediaService)
+    public function __construct(MediaService $mediaService,ClassService $classService)
     {
         $this->mediaService = $mediaService;
+        $this->classService = $classService;
+
         $this->accessKey = env('QINIU_ACCESS_KEY');
         $this->secretKey = env('QINIU_SECRET_KEY');
         $this->bucket = env('QINIU_BUCKET');
@@ -46,6 +49,8 @@ class MediaController extends Controller
                 'message' => $res->errors()
             ]);
         $mediaInfo = ValidationHelper::getInputData($request, $rule);
+        if(!$this->classService->isOwner($mediaInfo['class_id'],$userInfo->id))
+            return response()->json(Code::NO_PERMISSION);
         $fileName = $mediaInfo['file_name'];
         $saveKey = time() . str_random(10).'_'. $fileName;
         if($this->mediaService->isMediaExist($fileName))
@@ -97,4 +102,18 @@ class MediaController extends Controller
     {
         $this->mediaService->updateMediaStatus($request->id,$request->code);
     }
+
+    public function getMediaListByClassId($id,Request $request)
+    {
+        $userInfo = $request->user;
+
+        if(!$this->classService->isOwner($id,$userInfo->id))
+            return response()->json(Code::NO_PERMISSION);
+        $mediaList = $this->mediaService->getMediaListByClassId($id);
+        return response()->json([
+            'code' => 0,
+            'media_id' => $mediaList
+        ]);
+    }
+
 }
