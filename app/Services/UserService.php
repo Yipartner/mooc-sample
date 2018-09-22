@@ -106,7 +106,7 @@ class UserService
         $user = DB::table('users')->where('id', $userId)->first();
         $coin = intval($coin);
         $oldCoin = intval($user->coin);
-        if ($coin <= 0){
+        if ($coin < 0){
             return -1;
         }
         $newCoin = $oldCoin - $coin;

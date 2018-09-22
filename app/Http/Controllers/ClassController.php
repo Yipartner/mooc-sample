@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\ClassService;
+use App\Services\UserService;
 use App\Tools\Code;
 use App\Tools\ValidationHelper;
 use Illuminate\Http\Request;
@@ -10,6 +11,7 @@ use Illuminate\Http\Request;
 class ClassController extends Controller
 {
     private $classService;
+    private $userService;
     private $classRule = [
         'name' => 'required',
         'content' => 'required',
@@ -17,9 +19,10 @@ class ClassController extends Controller
         'fee_back_num' => 'required'
     ];
 
-    public function __construct(ClassService $classService)
+    public function __construct(ClassService $classService, UserService $userService)
     {
         $this->classService = $classService;
+        $this->userService = $userService;
     }
 
 
@@ -122,6 +125,33 @@ class ClassController extends Controller
             'code' => 0,
             'message' => 'get my class success',
             'class_list' => $lessonsList
+        ]);
+    }
+
+    public function buyClass($id, Request $request)
+    {
+        $userInfo = $request->user;
+
+        if($this->classService->buyClassOrNot($id,$userInfo->id))
+            return response()->json([
+                'code' => 205,
+                'message' => 'has buy class yet',
+            ]);
+
+
+        $classInfo = $this->classService->getClassInfoById($id);
+        $res = $this->userService->delCoin($userInfo->id, $classInfo->fee);
+
+        if($res < 0)
+            return response()->json([
+                'code' => 309,
+                'message' => "扣费失败，余额不足"
+            ]);
+        $orderId = $this->classService->buyClass($userInfo->id,$id);
+        return response()->json([
+            'code' => 0,
+            'message' => 'buy Success',
+            'order_id' => $orderId
         ]);
     }
 
