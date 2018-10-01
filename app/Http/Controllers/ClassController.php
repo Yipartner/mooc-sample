@@ -46,7 +46,9 @@ class ClassController extends Controller
         return response()->json([
             'code' => 0,
             'message' => 'create class Success',
-            'class_id' => $classId
+            'data' =>[
+                'class_id' => $classId
+            ]
         ]);
     }
 
@@ -86,7 +88,7 @@ class ClassController extends Controller
         return response()->json([
             'code' => 0,
             'message' => 'get class success',
-            'class_info' => $classInfo
+            'data' => $classInfo
         ]);
     }
 
@@ -103,7 +105,7 @@ class ClassController extends Controller
         return response()->json([
             'code' => 0,
             'message' => 'get classes success',
-            'class_list' => $classList
+            'data' => $classList
         ]);
     }
 
@@ -114,7 +116,7 @@ class ClassController extends Controller
         return response()->json([
             'code' => 0,
             'message' => 'get my class success',
-            'class_list' => $classList
+            'data' => $classList
         ]);
     }
 
@@ -124,7 +126,7 @@ class ClassController extends Controller
         return response()->json([
             'code' => 0,
             'message' => 'get my class success',
-            'class_list' => $lessonsList
+            'data' => $lessonsList
         ]);
     }
 
@@ -151,7 +153,9 @@ class ClassController extends Controller
         return response()->json([
             'code' => 0,
             'message' => 'buy Success',
-            'order_id' => $orderId
+            'data' => [
+                'order_id' => $orderId
+            ]
         ]);
     }
 

@@ -47,7 +47,9 @@ class LessonController extends Controller
         return response()->json([
             'code' => 0,
             'message' => 'create lesson Success',
-            'lesson_id' => $lessonId
+            'data' => [
+                'lesson_id' => $lessonId
+            ]
         ]);
     }
 
@@ -81,7 +83,7 @@ class LessonController extends Controller
         return response()->json([
            'code' => 0,
            'message' => 'get lesson info success',
-           'lesson_info' => $lessonInfo
+           'data' => $lessonInfo
         ]);
     }
 
@@ -101,7 +103,7 @@ class LessonController extends Controller
         return response()->json([
             'code' => 0,
             'message' => 'get class list success',
-            'lessons' => $lessonList
+            'data' => $lessonList
         ]);
     }
 

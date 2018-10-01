@@ -20,6 +20,7 @@ class MediaController extends Controller
     private $bucket;
     private $domain;
     private $callbackUrl;
+    private $pipeLine;
 
     public function __construct(MediaService $mediaService,ClassService $classService)
     {
@@ -31,7 +32,7 @@ class MediaController extends Controller
         $this->bucket = env('QINIU_BUCKET');
         $this->domain = env('QINIU_DOMAIN');
         $this->callbackUrl = env('CALLBACK_URL');
-
+        $this->pipeLine = env('PIPE_LINE');
     }
 
     public function makeUploadToken(Request $request)
@@ -73,13 +74,16 @@ class MediaController extends Controller
             'callbackBody' => '{"persistentId":"$(persistentId)","mp4Info":' . json_encode($mediaInfo) . '}',
             'callbackBodyType' => 'application/json',
             'persistentOps' => $videoDeal,
-            'persistentPipeline' => "video-pipe",
+            'persistentPipeline' => $this->pipeLine,
             'persistentNotifyUrl' => $this->callbackUrl.'/notify'
         ];
         $uploadToken = $auth->uploadToken($this->bucket, null, $expires, $policy,true);
         return response()->json([
             'code' => 0,
-            'upload_token' => $uploadToken
+            'message' => 'get Token success',
+            'data' =>[
+                'upload_token' => $uploadToken
+            ]
         ]);
     }
 
@@ -112,7 +116,8 @@ class MediaController extends Controller
         $mediaList = $this->mediaService->getMediaListByClassId($id);
         return response()->json([
             'code' => 0,
-            'media_id' => $mediaList
+            'message' => 'get Media success',
+            'data' => $mediaList
         ]);
     }
 
