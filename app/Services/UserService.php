@@ -50,7 +50,7 @@ class UserService
         if ($user == null)
             return -1;
 
-        if (md5($password) != $user->password)
+        if (!Hash::check($password,$user->password))
             return -2;
         else
             return $user->id;
