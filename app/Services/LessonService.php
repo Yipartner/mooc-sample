@@ -35,13 +35,21 @@ class LessonService
 
     public function getLessonInfoById($lessonId)
     {
-        $lessonInfo = DB::table($this->tbName)->where('id', $lessonId)->first();
+        $lessonInfo = DB::table($this->tbName)
+            ->where($this->tbName.'.id', $lessonId)
+            ->leftJoin('medias','medias.id','=',$this->tbName.'.movie_id')
+            ->select($this->tbName.'.*','medias.name as media_name','url','pre_url')
+            ->first();
         return $lessonInfo;
     }
 
     public function getLessonListByClassId($classId)
     {
-        $lessonesInfo = DB::table($this->tbName)->where('class_id', $classId)->get();
+        $lessonesInfo = DB::table($this->tbName)
+            ->where($this->tbName.'.class_id', $classId)
+            ->leftJoin('medias','medias.id','=',$this->tbName.'.movie_id')
+            ->select($this->tbName.'.*','medias.name as media_name','url','pre_url')
+            ->get();
         return $lessonesInfo;
     }
 

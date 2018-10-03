@@ -61,6 +61,7 @@ class MediaController extends Controller
             ]);
         $mediaInfo = array_merge($mediaInfo, [
             'file_url' => 'http://'.$this->domain .'/'. $fileName,
+            'pre_url' => 'http://'.$this->domain .'/'. $saveKey
         ]);
         $auth = new Auth($this->accessKey, $this->secretKey);
         $expires = 3600;
@@ -94,6 +95,7 @@ class MediaController extends Controller
         $mediaInfo['url'] = $request->mp4Info['file_url'];
         $mediaInfo['status_id'] = $request->persistentId;
         $mediaInfo['class_id'] = $request->mp4Info['class_id'];
+        $mediaInfo['pre_url'] = $request->mp4Info['pre_url'];
 
         $mediaId = $this->mediaService->createMedia($mediaInfo);
         return response()->json([
