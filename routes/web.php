@@ -22,3 +22,4 @@ require_once "homework.php";
 include "class.php";
 include "lesson.php";
 include "media.php";
+include "note.php";
