@@ -23,3 +23,4 @@ include "class.php";
 include "lesson.php";
 include "media.php";
 include "note.php";
+include "version.php";
