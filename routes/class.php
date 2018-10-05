@@ -13,3 +13,4 @@ Route::get('/classes', "ClassController@getAllClassList")->middleware(['token'])
 Route::get('/myclass', "ClassController@getMyClassList")->middleware(['token','teacher']);
 Route::get('/lessonby/{id}', "ClassController@getClassLessons")->middleware(['token']);
 Route::post('/buylesson/{id}', "ClassController@buyClass")->middleware(['token']);
+Route::get('/student/myclasses', "ClassController@getMyBoughtClasses")->middleware(['token']);

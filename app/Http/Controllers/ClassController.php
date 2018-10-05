@@ -160,4 +160,23 @@ class ClassController extends Controller
     }
 
 
+    public function getMyBoughtClasses(Request $request)
+    {
+        $userInfo = $request->user;
+        $classesList = $this->classService->getClassesByStuId($userInfo->id);
+        foreach ($classesList as $classInfo)
+        {
+            unset($classInfo->access_token);
+            unset($classInfo->class_secret);
+            unset($classInfo->class_num);
+            unset($classInfo->token_expired_at);
+        }
+        return response()->json([
+            'code' => 0,
+            'message' => 'get classes success',
+            'data' => $classesList
+        ]);
+    }
+
+
 }

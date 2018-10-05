@@ -118,4 +118,19 @@ class ClassService
         $buyersNum = DB::table('user_class_relations')->where('class_id',$classId)->count();
         return $buyersNum;
     }
+
+    /**
+     * @param $userId
+     * @return \Illuminate\Support\Collection
+     * 获取学生已购买课程列表
+     */
+    public function getClassesByStuId($userId)
+    {
+        $classInfos = DB::table('user_class_relations')
+            ->where('user_id', $userId)
+            ->join($this->tbName,$this->tbName.'.id','=','user_class_relations.class_id')
+            ->select($this->tbName.'.*')
+            ->get();
+        return $classInfos;
+    }
 }
