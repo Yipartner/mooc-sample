@@ -19,6 +19,8 @@ class CreateVersionControlTable extends Migration
             $table->text('version_content');
             $table->dateTime('updated_at');
             $table->string('apk_url');
+            //student | teacher
+            $table->string('client');
         });
     }
 
