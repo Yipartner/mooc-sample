@@ -10,7 +10,7 @@ class VersionController extends Controller
     //
 
     public function hasNewVersion(Request $request){
-        $currentVersion = $request->json('cversion');
+        $currentVersion = $request->input('cversion');
         $newestVersion = DB::table('version_control')
                 ->max('version_num');
         if ($currentVersion >= $newestVersion){
