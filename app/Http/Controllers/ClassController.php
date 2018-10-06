@@ -16,7 +16,8 @@ class ClassController extends Controller
         'name' => 'required',
         'content' => 'required',
         'fee' => 'required',
-        'fee_back_num' => 'required'
+        'fee_back_num' => 'required',
+        'class_pic' => ''
     ];
 
     public function __construct(ClassService $classService, UserService $userService)
