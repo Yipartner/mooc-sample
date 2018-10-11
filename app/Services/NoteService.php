@@ -49,6 +49,15 @@ class NoteService
         return $notesInfo;
     }
 
+    public function getMyAllNoteList($userId)
+    {
+        $noteList = DB::table($this->tbName)
+            ->where('user_id', $userId)
+            ->orderBy('updated_at','desc')
+            ->get();
+        return $noteList;
+    }
+
     public function deleteNote($noteId)
     {
         DB::table($this->tbName)->where('id', $noteId)->delete();

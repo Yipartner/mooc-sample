@@ -12,5 +12,6 @@ Route::group(['middleware' => 'token'], function () {
     Route::put('/note/{id}', "NoteController@updateNote");
     Route::get('/note/{id}', "NoteController@getNoteInfo");
     Route::delete('/note/{id}', "NoteController@deleteNote");
-    Route::get('/notes/{id}', "NoteController@getNoteList");
+    Route::get('/notes/{id}', "NoteController@getNoteListByLesson");
+    Route::get('/allnotes', "NoteController@getAllNotesList");
 });

@@ -84,7 +84,7 @@ class NoteController extends Controller
         return response()->json(Code::SUCCESS);
     }
 
-    public function getNoteList($id,Request $request)
+    public function getNoteListByLesson($id,Request $request)
     {
         $userInfo = $request->user;
         $NoteList = $this->noteService->getMyNoteListByLessonId($id,$userInfo->id);
@@ -92,6 +92,17 @@ class NoteController extends Controller
             'code' => 0,
             'message' => 'get class list success',
             'data' => $NoteList
+        ]);
+    }
+
+    public function getAllNotesList(Request $request)
+    {
+        $userInfo = $request->user;
+        $notesList = $this->noteService->getMyAllNoteList($userInfo->id);
+        return response()->json([
+            'code' => 0,
+            'message' => 'get note list success',
+            'data' => $notesList
         ]);
     }
 }
