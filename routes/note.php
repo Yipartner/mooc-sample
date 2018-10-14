@@ -14,4 +14,5 @@ Route::group(['middleware' => 'token'], function () {
     Route::delete('/note/{id}', "NoteController@deleteNote");
     Route::get('/notes/{id}', "NoteController@getNoteListByLesson");
     Route::get('/allnotes', "NoteController@getAllNotesList");
+    Route::get('/notesbyclass/{id}', "NoteController@getNotesByClassId");
 });

@@ -53,7 +53,7 @@ class NoteService
     {
         $noteList = DB::table($this->tbName)
             ->where('user_id', $userId)
-            ->orderBy('updated_at','desc')
+            ->orderBy('updated_at', 'desc')
             ->get();
         return $noteList;
     }
@@ -67,6 +67,24 @@ class NoteService
     {
         $res = DB::table($this->tbName)->where('id', $noteId)->value('user_id');
         return $res == $userId;
+    }
+
+    public function getLessonsIdByClassId($classId)
+    {
+        $lessons = DB::table('lessons')->where('class_id', $classId)->pluck('id');
+        return $lessons;
+    }
+
+    public function getNotesByClassId($classId, $userId, $lesson, $time)
+    {
+        $lessons = $this->getLessonsIdByClassId($classId);
+        $res = DB::table($this->tbName)
+            ->where('user_id', $userId)
+            ->whereIn('lesson_id', $lessons)
+            ->orderBy('lesson_id', $lesson)
+            ->orderBy('updated_at', $time)
+            ->get();
+        return $res;
     }
 
 }

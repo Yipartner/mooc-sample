@@ -31,9 +31,9 @@ class NoteController extends Controller
             return response()->json([
                 'code' => 201,
                 'message' => $res->errors()
-                ]);
+            ]);
         $noteInfo = ValidationHelper::getInputData($request, $rules);
-        $noteFullInfo = array_merge($noteInfo,[
+        $noteFullInfo = array_merge($noteInfo, [
             'user_id' => $userInfo->id
         ]);
         $noteId = $this->noteService->createNote($noteFullInfo);
@@ -50,18 +50,19 @@ class NoteController extends Controller
     {
         $userInfo = $request->user;
         $rules = $this->noteRules;
-        if(!$this->noteService->isOwner($id,$userInfo->id))
+        if (!$this->noteService->isOwner($id, $userInfo->id))
             return response()->json(Code::NO_PERMISSION);
         $res = ValidationHelper::validateCheck($request->all(), $rules);
-        if($res->fails())
+        if ($res->fails())
             return response()->json([
                 'code' => 201,
                 'message' => $res->errors()
             ]);
         $noteInfo = ValidationHelper::getInputData($request, $rules);
-        $noteFullInfo = array_merge($noteInfo,[
+        $noteFullInfo = array_merge($noteInfo, [
             'user_id' => $userInfo->id
-        ]);        $this->noteService->updateNote($id,$noteFullInfo);
+        ]);
+        $this->noteService->updateNote($id, $noteFullInfo);
         return response()->json(Code::SUCCESS);
     }
 
@@ -78,16 +79,16 @@ class NoteController extends Controller
     public function deleteNote($id, Request $request)
     {
         $userInfo = $request->user;
-        if(!$this->noteService->isOwner($id,$userInfo->id))
+        if (!$this->noteService->isOwner($id, $userInfo->id))
             return response()->json(Code::NO_PERMISSION);
         $this->noteService->deleteNote($id);
         return response()->json(Code::SUCCESS);
     }
 
-    public function getNoteListByLesson($id,Request $request)
+    public function getNoteListByLesson($id, Request $request)
     {
         $userInfo = $request->user;
-        $NoteList = $this->noteService->getMyNoteListByLessonId($id,$userInfo->id);
+        $NoteList = $this->noteService->getMyNoteListByLessonId($id, $userInfo->id);
         return response()->json([
             'code' => 0,
             'message' => 'get class list success',
@@ -99,6 +100,19 @@ class NoteController extends Controller
     {
         $userInfo = $request->user;
         $notesList = $this->noteService->getMyAllNoteList($userInfo->id);
+        return response()->json([
+            'code' => 0,
+            'message' => 'get note list success',
+            'data' => $notesList
+        ]);
+    }
+
+    public function getNotesByClassId($id,Request $request)
+    {
+        $userInfo = $request->user;
+        $orderLesson = $request->order_lesson;
+        $orderTime = $request->order_time;
+        $notesList = $this->noteService->getNotesByClassId($id, $userInfo->id, $orderLesson, $orderTime);
         return response()->json([
             'code' => 0,
             'message' => 'get note list success',
