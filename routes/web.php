@@ -24,3 +24,4 @@ include "lesson.php";
 include "media.php";
 include "note.php";
 include "version.php";
+include "rank.php";

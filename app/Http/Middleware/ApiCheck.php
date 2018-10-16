@@ -11,7 +11,7 @@ class ApiCheck
 {
     /**
      * Handle an incoming request.
-     *
+     *作业系统开放 API中间件
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure  $next
      * @return mixed
