@@ -18,6 +18,7 @@ class CreateClassesTable extends Migration
             $table->string('name');
             $table->text('content');
             $table->integer('teacher_id');
+            $table->string('type')->defalult(null);
             //课程押金费用
             $table->integer('fee');
             //最大押金退还额度

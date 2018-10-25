@@ -133,4 +133,12 @@ class ClassService
             ->get();
         return $classInfos;
     }
+
+    public function getClassByType($typeName)
+    {
+        $classInfos = DB::table($this->tbName)
+            ->where('type', $typeName)
+            ->get();
+        return $classInfos;
+    }
 }

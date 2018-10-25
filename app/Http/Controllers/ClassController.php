@@ -17,7 +17,8 @@ class ClassController extends Controller
         'content' => 'required',
         'fee' => 'required',
         'fee_back_num' => 'required',
-        'class_pic' => ''
+        'class_pic' => '',
+        'type' => ''
     ];
 
     public function __construct(ClassService $classService, UserService $userService)
@@ -176,6 +177,16 @@ class ClassController extends Controller
             'code' => 0,
             'message' => 'get classes success',
             'data' => $classesList
+        ]);
+    }
+
+    public function getClassByType($type, Request $request)
+    {
+        $classes = $this->classService->getClassByType($type);
+        return response()->json([
+            'code' => 0,
+            'message' => '获取该分类成功',
+            'data' => $classes
         ]);
     }
 
